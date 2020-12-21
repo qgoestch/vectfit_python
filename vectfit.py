@@ -99,7 +99,7 @@ def vectfit_step(f, s, poles):
     H = A - outer(b, c)
     H = real(H)
     new_poles = sort(eigvals(H))
-    unstable = real(new_poles) > 0
+    unstable = real(new_poles) < 0
     new_poles[unstable] -= 2*real(new_poles)[unstable]
     return new_poles
 
@@ -164,10 +164,12 @@ def print_params(poles, residues, d, h):
 def vectfit_auto(f, s, n_poles=10, n_iter=10, show=False,
                  inc_real=False, loss_ratio=1e-2, rcond=-1, track_poles=False):
     w = imag(s)
-    pole_locs = linspace(w[0], w[-1], n_poles+2)[1:-1]
+    # Modification forcing the starting poles to be real and logarithmically spaced
+    pole_locs = np.logspace(w[0], w[-1], n_poles+2)[1:-1]
+    poles = pole_locs
     lr = loss_ratio
-    init_poles = poles = concatenate([[p*(-lr + 1j), p*(-lr - 1j)] for p in pole_locs])
-
+    # old implementation:
+    # init_poles = poles = concatenate([[p*(-lr + 1j), p*(-lr - 1j)] for p in pole_locs])
     if inc_real:
         poles = concatenate((poles, [1]))
 
@@ -235,6 +237,6 @@ if __name__ == '__main__':
     figure()
     plot(test_s.imag, test_f.real)
     plot(test_s.imag, test_f.imag)
-    plot(test_s.imag, fitted.real)
-    plot(test_s.imag, fitted.imag)
+    plot(test_s.imag, fitted.real, ls="--")
+    plot(test_s.imag, fitted.imag, ls="--")
     show()

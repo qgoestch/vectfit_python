@@ -24,4 +24,4 @@ All credit goes to Bjorn Gustavsen for his MATLAB implementation, and the follow
 """
 __author__ = 'Phil Reinhold'
 ##
-from vectfit import *
+from .vectfit import *
